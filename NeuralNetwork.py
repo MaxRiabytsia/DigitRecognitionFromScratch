@@ -30,13 +30,13 @@ class NeuralNetwork:
                 print(f"================ Epoch {epoch} ================\n"
                       f"Training Accuracy: {round(accuracy * 100, 2)}% \n")
 
-    def __forward_propagation(self, train_data):
+    def __forward_propagation(self, train_data: np.array):
         self.hidden_layer_input = self.hidden_layer_weights.dot(train_data.T) + self.hidden_layer_biases
         self.hidden_layer_output = NeuralNetwork.__relu(self.hidden_layer_input)
         self.output_layer_input = self.output_layer_weights.dot(self.hidden_layer_output) + self.output_layer_biases
         self.output_layer_output = NeuralNetwork.__softmax(self.output_layer_input)
 
-    def __backward_propagation(self, train_data, train_labels):
+    def __backward_propagation(self, train_data: np.array, train_labels: np.array):
         m = train_labels.size
         one_hot_train_labels = NeuralNetwork.__to_one_hot_encoded(train_labels)
         dZ2 = self.output_layer_output - one_hot_train_labels
@@ -46,7 +46,7 @@ class NeuralNetwork:
         self.dW1 = 1 / m * dZ1.dot(train_data)
         self.dB1 = 1 / m * np.sum(dZ1)
 
-    def __update_weights_and_biases(self, learning_rate):
+    def __update_weights_and_biases(self, learning_rate: float):
         self.hidden_layer_weights -= learning_rate * self.dW1
         self.hidden_layer_biases -= learning_rate * self.dB1
         self.output_layer_weights -= learning_rate * self.dW2
@@ -63,11 +63,11 @@ class NeuralNetwork:
         return prediction[0], self.output_layer_output[prediction][0][0]
 
     @staticmethod
-    def __get_predictions(output):
+    def __get_predictions(output: np.array) -> np.array:
         return np.argmax(output, 0)
 
     @staticmethod
-    def __get_accuracy(predictions, labels):
+    def __get_accuracy(predictions: np.array, labels: np.array) -> float:
         predictions = NeuralNetwork.__get_predictions(predictions)
         return np.sum(predictions == labels) / labels.size
 
@@ -76,7 +76,7 @@ class NeuralNetwork:
         return np.maximum(x, 0)
 
     @staticmethod
-    def __relu_derivative(x):
+    def __relu_derivative(x) -> np.array:
         return x > 0
 
     @staticmethod
@@ -84,13 +84,13 @@ class NeuralNetwork:
         return np.exp(x) / sum(np.exp(x))
 
     @staticmethod
-    def __to_one_hot_encoded(labels: np.array):
+    def __to_one_hot_encoded(labels: np.array) -> np.array:
         result = np.zeros((labels.shape[0], np.max(labels) + 1))
         result[np.arange(labels.shape[0]), labels] = 1
         return result.T
 
     @staticmethod
-    def __unison_shuffle(array1: np.array, array2: np.array):
+    def __unison_shuffle(array1: np.array, array2: np.array) -> tuple[np.array, np.array]:
         assert len(array1) == len(array2)
         p = np.random.permutation(len(array1))
         array1, array2 = array1[p], array2[p]

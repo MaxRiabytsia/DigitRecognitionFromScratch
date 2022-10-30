@@ -5,7 +5,7 @@ import os
 from NeuralNetwork import NeuralNetwork
 
 
-def apply_noise(pixels):
+def apply_noise(pixels: np.array) -> np.array:
     pixels += np.random.uniform(-0.3, 0.3, pixels.shape)
     pixels = (pixels - np.min(pixels)) / (np.max(pixels) - np.min(pixels))
     return pixels
@@ -43,7 +43,7 @@ def get_neural_net(train_images: np.array, train_labels: np.array) -> NeuralNetw
         hidden_layer_neurons_number=32,
         output_layer_neurons_number=10
     )
-    neural_net.train(train_images, train_labels, epochs=2000, learning_rate=0.1)
+    neural_net.train(train_images, train_labels, epochs=2000, learning_rate=0.5)
     return neural_net
 
 
